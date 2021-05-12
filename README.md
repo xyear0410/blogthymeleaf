@@ -1,6 +1,6 @@
 # 工程简介
 
-第一次学springboot，用得是thymeleaf+jquery emm感觉做的很一般，，，，
+第一次学springboot，前端用得是thymeleaf+jquery ，登录啥得也用了springsecurity。
 
 # 延伸阅读
 
