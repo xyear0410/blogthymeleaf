@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <script src="/layui/layui.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+<!--    <script type="text/javascript" src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>-->
+    <script src="./ckeditor5/build/ckeditor.js"></script>
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .blogbackground{
+
+            width: 100%;
+            height: 600px;
+        }
+        .write{
+            margin-top: 20px;
+            background-color: white;
+        }
+        textarea.form-control {
+            height: 318px;
+            resize: none;
+        }
+        .main{width: 100%;height: 100%;background-color: rgba(0,0,0,0.8);display: none;position: fixed;z-index: 1;}
+        .mainbox{width: 800px;height: 100%;margin: 0 auto;background-color: rgba(255,255,255,0.8);padding: 20px;}
+        .ck-editor__editable { min-height: 300px; }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+
+<div class="container-fluid blogbackground">
+    <div class="row">
+
+        <div class="col-sm-offset-3 col-sm-6 write" >
+
+            <form id="blogform" th:action="@{/addblogback}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label >标题</label>
+                    <input type="text" name="title" class="form-control" placeholder="请输入标题"/>
+                </div>
+                <div class="form-group">
+                    <label >分类</label>
+                       <select  name="classifyid" class="form-control">
+                           <option th:each="classify : ${classifies}"
+                                   th:text="${classify.getClassifyname()}"
+                                   th:value="${classify.getId()}"
+                                    name="classifyid"></option>
+                       </select>
+                </div>
+
+                <div class="form-group">
+                    <label >博客封面 上传</label>
+                    <input type="file" name="file" >
+                    <p class="help-block">文件</p>
+                </div>
+
+                <div class="form-group">
+                    <label>类型</label>
+                    <label class="checkbox-inline">
+                        <input type="radio" name="byperson" class="form-control" id="myself" value="1"  checked>原创
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" name="byperson" class="form-control" id="himself" value="0">转载
+                    </label>
+                </div>
+
+                <div id="url" class="form-group" style="display: none;" >
+                    <label>原文链接</label>
+                    <input type="url" name="url" id="urlcontent" class="form-control" value="www.baidu.com">
+                </div>
+
+                <div class="form-group">
+                    <label>标签</label>
+                    <input type="checkbox" name="labels" th:each="label : ${labels}" th:text="${label.getLabelname()}" th:value="${label.getId()}" id="labelcheck">
+                </div>
+                <div class="form-group">
+                    <label>内容</label>
+
+                    <textarea   name="content"
+                               class="form-control " id="edit"  rows="10" cols="10" placeholder="请输入博客内容"></textarea>
+                        <script>
+                            // 上面的编辑框
+                            ClassicEditor
+                                .create( document.querySelector( '#edit' ), {
+
+                                    toolbar: {
+                                        items: [
+                                            'heading',
+                                            '|',
+                                            'bold',
+                                            'italic',
+                                            'link',
+                                            'bulletedList',
+                                            'numberedList',
+                                            '|',
+                                            'outdent',
+                                            'indent',
+                                            '|',
+                                            'blockQuote',
+                                            'undo',
+                                            'redo'
+                                        ]
+                                    },
+                                    language: 'zh-cn',
+                                    table: {
+                                        contentToolbar: [
+                                            'tableColumn',
+                                            'tableRow',
+                                            'mergeTableCells'
+                                        ]
+                                    },
+                                    licenseKey: '',
+
+
+                                } )
+                                .then( editor => {
+                                    window.editor = editor;
+                                } )
+                                .catch( error => {
+                                    console.error( 'Oops, something went wrong!' );
+                                    console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
+                                    console.warn( 'Build id: ibjq5v6l3gi2-rzn5b6r6hoyd' );
+                                    console.error( error );
+                                } );
+                        </script>
+
+
+
+                </div>
+                    <div style="text-align: right">
+                    <input type="submit"  id="buttonform" class="btn btn-default" value="提交"/>
+                    </div>
+            </form>
+
+        </div>
+        <div class="col-sm-3">
+            1
+        </div>
+
+    </div>
+</div>
+<div class="main" >
+    <div class="mainbox">
+        <div class="close">点击关闭</div>
+    </div>
+</div>
+
+
+<script >
+    $(function () {
+
+        $('#blogform').bootstrapValidator({
+            //默认提示
+            message:'This value is not valid',
+            feedbackIcons: {
+                      valid: 'glyphicon glyphicon-ok',
+                         invalid: 'glyphicon glyphicon-remove',
+                      validating: 'glyphicon glyphicon-refresh'
+            },
+            /*
+
+
+            submitHandler: function (validator, form, submitButton) {
+                // 表单提交成功时会调用此方法
+                // validator: 表单验证实例对象
+                // form jq对象 指定表单对象
+                // submitButton jq对象 指定提交按钮的对象
+                console.log("使用了submitHandler");
+            },
+            */
+
+            fields:{
+                username: {
+                    message: '用户名验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 18,
+                            message: '用户名长度必须在6到18位之间'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9_]+$/,
+                            message: '用户名只能包含大写、小写、数字和下划线'
+                        }
+                    }
+                },
+                content: {
+                    message: '验证失败',
+                    validators: {
+                        notEmpty:{
+                            message:'内容不可以为空'
+                        }
+                    }
+                },
+                title:{
+                    message:'标题验证错误',
+                    validators:{
+                        notEmpty:{
+                            message:'标题不可以为空'
+                        }
+                    }
+                },
+                url:{
+                    message:'请输入正确的地址'
+
+
+                }
+
+            }
+        });
+        $("#myself").click(function (){
+            console.log("原创");
+            $('#url').css("display","none");
+        });
+
+        $("#himself").click(function (){
+            console.log("转载");
+            $("#urlcontent").val("");
+            $('#url').css("display","block");
+        });
+
+        var b = $("#labelcheck").val();
+        console.log("b=>"+b);
+        $("#buttonform").click(function (){
+            var labelselect = [];
+            $('input[name="labels"]:checked').each(function (){
+                labelselect.push($(this).val());
+            })
+            var group =labelselect.join(",");
+            labelselect =$.makeArray(labelselect);
+            console.log(labelselect);
+            $.post({
+                url:"/selectlabel",
+                data: {group:group}
+            })
+            }
+        )
+
+        $('input[type=checkbox]').click(function() {
+            $("input[name='labels[]']").attr('disabled', true);
+            console.log("点击了多选");
+            if ($("input[name='labels[]']:checked").length >= 2) {
+                $("input[name='labels[]']:checked").attr('disabled', false);
+                console.log("多了2个");
+            } else {
+                $("input[name='labels[]']").attr('disabled', false);
+                console.log("少于2个");
+            }
+
+        });
+    });
+
+
+
+
+</script>
+</body>
+</html>

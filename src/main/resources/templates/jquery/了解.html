@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+//绑定文档加载完成监听
+    $(function () {
+        $('#btn1').click(function () { //给btn1绑定
+            var  username = $('#username').val()
+            alert(username)
+        })
+    })
+
+</script>
+</head>
+<body>
+用户名 <input type="text" id="username">
+<button id="btn1">jquery</button>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tgxyear.mapper.GreatblogMapper">
+
+
+	<delete id="delall"> DELETE FROM greatblog WHERE greatblog.bid =#{bid} AND greatblog.uid =#{uid} </delete>
+	<select id="selectblogonegreat" resultType="java.lang.Integer">
+		SELECT COUNT(greatblog.bid) FROM greatblog WHERE greatblog.bid = #{blogid}
+
+	</select>
+    <select id="checkgreat" resultType="java.lang.Integer">
+		SELECT id FROM greatblog
+WHERE greatblog.bid =#{bid}
+AND  greatblog.uid=#{uid}
+	</select>
+    <select id="selectgreatblog" resultType="com.tgxyear.pojo.Blog">
+		SELECT * FROM blog WHERE id IN (SELECT bid FROM greatblog WHERE uid = #{uid})
+		order by createtime desc
+	</select>
+
+	<select id="getusergreat" resultType="java.lang.Integer">
+		SELECT SUM(bgreat) FROM blog
+		WHERE blog.uid= #{uid}
+	</select>
+</mapper>

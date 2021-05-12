@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>评论管理</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/layui/message.js"></script>
+</head>
+<body>
+<!--导航栏-->
+<div th:replace="~{commons/adcommon::topbar}"></div>
+
+<div class="row">
+    <!--    右边菜单栏-->
+    <div th:replace="~{commons/adcommon::sidebar}"></div>
+    <div class="col-sm-10">
+        <div class="page-header" style="margin-top: -8px;">
+            <h1>评论管理</h1>
+
+
+        </div>
+        <table class="table table-hover" style="width: 1400px;border-radius: 30px;">
+            <thead>
+            <tr>
+                <td>#</td>
+                <td>评论内容</td>
+                <td>评论者</td>
+                <td>评论时间</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each=" commentlist : ${commentlists}">
+                <td th:text="${commentlistStat.index+1}"></td>
+                <td th:text="${commentlist.getContent()}"></td>
+                <td th:text="${commentlist.getUname()}"></td>
+                <td th:text="${#dates.format(commentlist.getCreatetime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <a class="btn btn-sm btn-primary" data-toggle="modal"
+                       data-target="#editcomment"
+                       th:data-whatever="${commentlist.id}">编辑</a>
+                    <a class="btn btn-sm btn-danger" data-toggle="modal"
+                       data-target="#delcomment"
+                       th:data-whatever="${commentlist.id}">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+<!--        分页-->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+
+                <li>
+                    <a th:href="'/touserlist?pageNum=1'">首页</a>
+                </li>
+                <li>
+                    <!-- 上一页 -->
+                <li th:if="${currentpage eq 1}" class="disabled">
+                    <a class="Previous"   aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentpage ne 1}">
+                    <a class="Previous" th:href="'/tocommentlist?pageNum='+${currentpage -1}"  aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                </li>
+                <li th:each="pageNum:${#numbers.sequence(1,pagecount)}">
+                    <a th:href="'/tocommentlist?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum eq currentpage}"  th:style="'font-weight:bold;background: #6faed9;'"></a>
+                    <a th:href="'/tocommentlist?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum ne currentpage}"  ></a>
+
+                </li>
+                <!--下一页-->
+                <li  th:if="${currentpage ne pagecount}">
+
+                    <a th:href="'/tocommentlist?pageNum='+${currentpage +1}"  aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+
+                <li  th:if="${currentpage eq pagecount}" class="disabled">
+                    <a  aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<!--编辑模态框-->
+<div class="modal fade" id="editcomment" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <form th:action="@{/tosubmitcomment}" method="post">
+                <div class="modal-body" id="checkid">
+                    <input type="hidden" name="id" id="commentids">
+                        <div class="form-group">
+                              <p>博客标题:<input name="title" id="title" type="text" readonly="readonly" class="form-control"></div>
+                    <div class="form-group">
+                       评论者:<input  name="uname" id="name" type="text" readonly="readonly" class="form-control"></div>
+                    <div class="form-group">
+                       评论内容:<textarea name="content" id="content" type="text" class="form-control" style="text-decoration: none;"></textarea></div>
+                    <div class="form-group">
+                        <div id="createtime"  class="form-control">1111</div></p></div>
+                    <div class="form-group">
+                    <a id="more">详情点我</a></div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--删除模态框-->
+<div class="modal fade" id="delcomment" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <div >
+              <h2>  确定要删除吗？</h2>
+                <input type="hidden" name="delcommentid" id="delcommentid">
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary" id="entermessage" data-dismiss="modal">确认</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--<button id="sdefnc">123</button>-->
+
+<script>
+    //点击编辑按钮
+    $("#editcomment").on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // 触发事件的按钮
+        var id = button.data('whatever');// 解析出data-whatever内容
+        var modal = $(this);
+        console.log(id);
+        $.ajax({
+            url:"/findonecommentvo",
+            type:"get",
+            data:{commentid:id},
+            success:function (data) {
+                console.log("check"+data.check);
+                    modal.find("#commentids").val(data.id);
+                    modal.find('#title').val(data.title);
+                    modal.find('#name').val(data.uname);
+                    modal.find('#content').val(data.content);
+                    $('#createtime').html(data.createtime);
+                    $('#more').attr("href", "/toblogmessage/" + data.bid);
+
+
+            }
+        })
+    });
+    //删除模态框
+    $("#delcomment").on('show.bs.modal', function (event){
+        var button = $(event.relatedTarget); // 触发事件的按钮
+        var id = button.data('whatever');// 解析出data-whatever内容
+        var modal = $(this);
+        console.log(id);
+        $("#delcommentid").attr("value",id);
+    });
+    //删除事件
+    $("#entermessage").on('click',function () {
+        $("#delcomment").css('display','none');
+        var delcommentid = $("#delcommentid").val();
+        console.log("取得的id"+delcommentid);
+        var result;
+        $.ajax({
+            url:"/todelonecomment",
+            type:"get",
+            data:{delcommentid:delcommentid},
+            success:function (i) {
+                //成功
+                if (i==1){
+                    result ="删除成功";
+                    $.message({
+                        message:result,
+                        type:'success'
+                    });
+                    window.location.reload();
+                }else {
+                    //失败
+                    result="删除失败";
+                    $.message({
+                        message:result,
+                        type:'error'
+                    });
+                    window.location.reload();
+                }
+            }
+        })
+
+    })
+
+    $("#sdefnc").on('click',function () {
+
+        var delcommentid = $("#delcommentid").val();
+        console.log("取得的id"+delcommentid);
+
+        $.message({
+            message:'成功提示',
+            type:'success'
+        });
+    })
+</script>
+</body>
+</html>

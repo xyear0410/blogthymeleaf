@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tgxyear.mapper.CommentMapper">
+	<insert id="saveComment" parameterType="com.tgxyear.pojo.Comment">
+		INSERT INTO `comment`(`comment`.content,great,uid,uname,bid,parent_comment_id,createtime,avater)
+VALUES(#{content},#{great},#{uid},#{uname},#{bid},#{parentCommentId},#{createtime},#{avater});
+
+	</insert>
+    <update id="updateContentById">
+		UPDATE `comment` SET content =#{content} WHERE `comment`.id=#{commentid}
+	</update>
+
+
+    <select id="getblogonecomment" resultType="com.tgxyear.pojo.Comment">
+         SELECT
+	`comment`.bid,
+	`comment`.content,
+	`comment`.createtime,
+	`comment`.uid,
+	`comment`.uname
+FROM
+	`comment`,
+	blog,
+	`user`
+WHERE
+	`comment`.bid = blog.id
+	and `comment`.uid =`user`.id
+	AND `comment`.bid = #{id}
+    </select>
+
+	<!--查询父级评论-->
+	<select id="findByParentIdNull" resultType="com.tgxyear.pojo.Comment">
+		SELECT
+	`comment`.id,
+	`comment`.content,
+	`comment`.great,
+	`comment`.uid,
+	`comment`.uname,
+	`comment`.bid,
+	`comment`.avater,
+	`comment`.createtime,
+	`comment`.parent_comment_id
+FROM
+	`comment`
+WHERE
+	`comment`.parent_comment_id = #{ParentId}
+ORDER BY
+	`comment`.createtime DESC
+
+	</select>
+	<!--查询一级回复-->
+	<select id="findByParentIdNotNull" resultType="com.tgxyear.pojo.Comment">
+	SELECT
+	`comment`.id,
+	`comment`.content,
+	`comment`.great,
+	`comment`.uid,
+	`comment`.uname,
+	`comment`.bid,
+	`comment`.avater,
+	`comment`.createtime,
+	`comment`.parent_comment_id
+FROM
+	`comment`
+WHERE
+	`comment`.parent_comment_id = #{id}
+ORDER BY
+	`comment`.createtime DESC
+
+	</select>
+
+	<!--查询二级以及所有子集回复-->
+	<select id="findByReplayId" resultType="com.tgxyear.pojo.Comment">
+	SELECT
+	`comment`.id,
+	`comment`.content,
+	`comment`.great,
+	`comment`.uid,
+	`comment`.uname,
+	`comment`.bid,
+	`comment`.avater,
+	`comment`.createtime,
+	`comment`.parent_comment_id
+FROM
+	`comment`
+WHERE
+	`comment`.parent_comment_id = #{childId}
+ORDER BY
+	`comment`.createtime DESC
+
+	</select>
+	<select id="findtwo" resultType="com.tgxyear.pojo.Comment">
+		SELECT
+	*,
+	`comment`.id,
+	`comment`.content,
+	`comment`.great,
+	`comment`.uid,
+	`comment`.uname,
+	`comment`.bid,
+	`comment`.avater,
+	`comment`.createtime
+FROM
+	`comment`
+WHERE
+	`comment`.parent_comment_id = #{ParentId} AND
+	`comment`.bid = #{Bid}
+ORDER BY
+	`comment`.createtime DESC
+	</select>
+    <select id="findallcomment" resultType="com.tgxyear.pojo.Comment">
+		SELECT
+			`comment`.id,
+			`comment`.content,
+			`comment`.great,
+			`comment`.uname,
+			`comment`.bid,
+			`comment`.avater,
+			`comment`.uid,
+			blog.title,
+			`comment`.createtime,
+			`comment`.parent_comment_id
+		FROM
+			`comment`
+				LEFT JOIN blog ON `comment`.bid=blog.id
+
+		ORDER BY `comment`.createtime DESC
+	</select>
+	<select id="findOneById" resultType="com.tgxyear.utils.Commentvo">
+		SELECT
+		`comment`.id,
+		`comment`.content,
+		`comment`.great,
+		`comment`.uname,
+		`comment`.bid,
+		`comment`.uid,
+		`comment`.avater,
+		blog.title,
+		`comment`.createtime,
+		`comment`.parent_comment_id
+	FROM
+		`comment`,blog
+	WHERE `comment`.bid=blog.id
+	AND `comment`.id=#{id}
+	</select>
+	<select id="selectusercomment" resultType="com.tgxyear.pojo.Comment">
+		SELECT
+	`comment`.id,
+	`comment`.content,
+	`comment`.great,
+	`comment`.uid,
+	`comment`.uname,
+	`comment`.bid,
+	`comment`.avater,
+	`comment`.createtime,
+	`comment`.parent_comment_id
+FROM
+	`comment`
+WHERE uid = #{uid}
+ORDER BY createtime DESC
+
+	</select>
+
+	<select id="checkexitblogcomment" resultType="java.lang.Boolean">
+		SELECT blog.title FROM blog
+LEFT JOIN `comment` ON blog.id =`comment`.bid
+		WHERE `comment`.bid = #{bid}
+	</select>
+</mapper>

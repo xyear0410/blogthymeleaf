@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>分类</title>
+
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/blogmessage.js"></script>
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+<DIV CLASS="container">
+    <div class="col-sm-2" th:each="classify : ${classifies}">
+        <a
+                th:text="${classify.getClassifyname()}"
+                th:value="${classify.id}"
+                th:href="@{/toblogindexclassify/}+${classify.id}" class="list-group-item ">
+
+    </a>
+        </div>
+</DIV>
+
+
+</body>
+</html>

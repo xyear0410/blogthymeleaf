@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<!--头部导航-->
+<nav class="navbar navbar-inverse" th:fragment="topbar">
+    <div class="container-fluid" >
+        <!--       表头-->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--            标题-->
+            <a class="navbar-brand" href="#">后台</a>
+        </div>
+
+        <!--        右上边提示栏-->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">欢迎回来:</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false"><span sec:authentication="name"></span><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/logout">注销</a></li>
+                        <li><a href="/toblogdindex">返回前端</a></li>
+                        <li><a href="#">其他</a></li>
+                        <li role="separator" class="divider"></li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--侧边栏-->
+<div class="col-sm-2" th:fragment="sidebar">
+    <div class="list-group">
+        <a th:href="@{/ad}" class="list-group-item"><span class="glyphicon glyphicon-home"></span>首页</a>
+        <a href="/touserlist" class="list-group-item"><span class="glyphicon glyphicon-grain"></span>用户管理</a>
+        <a href="/getbot" class="list-group-item"><span class="glyphicon glyphicon-th-large"></span>博客管理</a>
+        <a href="/toclassify" class="list-group-item"><span class="glyphicon glyphicon-bookmark"></span>分类管理</a>
+        <a href="/tocommentlist" class="list-group-item"><span class="glyphicon glyphicon-comment">评论管理</span></a>
+
+    </div>
+</div>
+</html>

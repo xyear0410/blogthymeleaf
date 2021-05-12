@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--http://www.w3.org/1999/xhtml-->
+<!--http://www.thymeleaf.org-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>博客空间</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <script src="/layui/layui.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .topimage{
+            margin-top: 20px;
+            height: 390px;
+            width: 100%;
+            background:url("/image/water3.jpg")  no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .toptext{
+            text-align: center;
+            color: #a79595;
+        }
+        .mypic{
+
+        }
+        .mymessage{
+            text-align: center;
+        }
+        .media{
+            border:0px solid #b3adad;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            position: relative;
+            background-color:rgba(255,255,255,0.1);
+            height: 231px;
+        }
+        .media-heading{
+            font-size: 31px;
+            display: inline;
+            margin-left: 27px;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+<div class="container">
+<!--    巨幕-->
+    <div class="jumbotron topimage">
+        <h1 class="toptext" style="margin-top: 50px;">我的博客</h1>
+        <p class="toptext">欢迎到来我的博客哦</p>
+        <p class="toptext"><a class="btn btn-primary btn-lg " href="#" role="button" style="align-content: center">好耶！</a></p>
+    </div>
+<!--列表-->
+
+
+    <div class=" col-sm-9">
+
+        <div class="media" th:each="list: ${lists}" style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+            <a th:href="@{/toblogmessage/}+${list.getId()}" style="text-decoration: none;">
+                <div class="media-body" style="height: 100%">
+                    <div class="media-heading" th:text="${list.getTitle()}">这里是标题哦</div>
+                    <br>
+
+                    <div style="font-size: 20px; margin-top: 20px;margin-left: 50px;height: 50px;
+                                                font-weight: lighter;padding-left: 25px; color: #0a8652;" th:utext="${list.getContent()}">　
+                        甪直镇有“神州水乡第一镇”之称，位于苏州以东25公里与昆山的交界处。这个镇名的第一个字难识也难忘，我第一次看
+                        到时赶紧查了字典。“甪”字创于秦朝：“角”字为七划，字头形似双角，指的是双角兽之双角；“甪”字为六划，字头形似独
+                        角，指的是独角兽之角。
+                    </div>
+                </div>
+                <div class="media-right">
+                    <img class="media-object" th:src="@{${list.getPicture()}}"
+                         style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-right: 8px;border-radius: 20px;"
+                         alt="...">
+
+                </div>
+                   <div class="media-bottom" style="padding-left: 15px;">
+                        <div class="glyphicon glyphicon-hand-right"></div>  <span th:text="${list.getBgreat()}">11</span>
+                        <div class="glyphicon glyphicon-eye-open"><span th:text="${list.getView()}">231</span> </div>
+                        <!--            创建日期-->
+                        <div class="glyphicon glyphicon-dashboard" >[[${#dates.format(list.getCreatetime(),'yyyy-MM-dd HH:mm')}]]</div>
+                   </div>
+            </a>
+             <hr>
+        </div>
+
+
+
+<!--        分页-->
+        <nav aria-label="Page navigation" >
+            <ul class="pagination">
+                <li>
+                    <a th:href="'/toppersonpage?pageNum=1'">首页</a>
+                </li>
+                <li>
+                    <!-- 上一页 -->
+                <li th:if="${currentpage eq 1}" class="disabled">
+                    <a class="Previous" href="#"  aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentpage ne 1}">
+                    <a class="Previous" th:href="'/toppersonpage?pageNum='+${currentpage -1}"  aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                </li>
+                <li th:each="pageNum:${#numbers.sequence(1,pagecount)}">
+                    <a th:href="'/toppersonpage?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum eq currentpage}"  th:style="'font-weight:bold;background: #6faed9;'"></a>
+                    <a th:href="'/toppersonpage?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum ne currentpage}"  ></a>
+
+                </li>
+                <!--下一页-->
+                <li  th:if="${currentpage ne pagecount}">
+                    <a th:href="'/toppersonpage?pageNum='+${currentpage +1}"  aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+
+                <li  th:if="${currentpage eq pagecount}" class="disabled">
+                    <a  aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+
+
+
+
+
+
+    </div>
+
+    <div class="col-sm-3">
+                <div class="mymessage" >
+                    <img  th:src="@{${user.getUserpic()}}"  class="img-circle mypic" style="width: 139px;height: 125px; ">
+                </div>
+                <br>
+
+                    <div class="text-center">
+                        <span class="text-center"  style="font-size: 30px;"
+                              th:text="${user.getName()}"></span><br>
+                            <span>粉丝数：</span> <span th:text="${noticed}">111</span><br>
+                          <span>关注数：</span> <span th:text="${followid}">111</span><br>
+                        <span>点赞数：</span> <span th:text="${greatnum}">111</span>
+                    </div>
+                <hr>
+        <!--        列表组-->
+        <div class="row">
+            <div class="col-sm-6" style="text-align: center">
+                <a class="btn btn-default" style="text-align: center;" th:href="@{/topersonspace/}+${user.getId()}">博客管理</a> </div>
+            <div class="col-sm-6"  style="text-align: center">
+                <a class="btn btn-default" style="text-align: center;" th:href="@{/tomamsg}">个人信息管理</a> </div>
+        </div>
+
+
+
+
+
+</div>
+</body>
+</html>

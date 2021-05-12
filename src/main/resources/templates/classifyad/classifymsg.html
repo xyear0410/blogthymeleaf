@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>分类列表</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/blogmessage.js"></script>
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .media-heading{
+            font-size: 31px;
+            display: inline;
+            margin-left: 27px;
+        }
+        .layui-anim{animation-duration: 1s; -webkit-animation-duration: 1s;}
+    </style>
+</head>
+
+<body>
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+
+<div class="container layui-anim layui-anim-up ">
+    <div class="row">
+        <!-- 为空 -->
+        <div class=" col-sm-11" >
+
+            <div class="row" style="margin-top: 30px;">
+                <!-- 具体内容 -->
+                <div th:if="${count eq 0}">搜索结果为空</div>
+                <div th:if="${count ne 0}">
+                      <div class="media"   th:each="blink:${lists}" style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+
+                    <a th:href="@{/toblogmessage/}+${blink.getId()}" style="text-decoration:none;">
+                        <div class="media-body" style="height: 100%">
+                            <div class="media-heading" th:text="${blink.getTitle()}" > </div>
+                            <br>
+                            <div  style="font-size: 20px; margin: 30px;margin-left: 50px;height: 50px;
+											font-weight: lighter;padding-left: 25px; color: #0a8652;font-family:Glyphicons Halflings "
+                                  th:utext="${blink.getContent()}"></div>
+                            <br>
+
+                        </div>
+
+                        <div class="media-right"><img class="media-object" th:src="@{${blink.getPicture()}}"
+                                                      style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-right: 8px;border-radius: 20px;"
+                                                      alt="...">
+                        </div>
+
+                        <div class="media-bottom" style="margin-left: 10px;">
+                            <span class="layui-icon layui-icon-praise great">[[${blink.getBgreat()}]]</span>
+                            <span class="layui-icon layui-icon-read">[[${blink.getView()}]]</span>
+                            <span th:text="${#dates.format(blink.getCreatetime(),'yyyy-MM-dd HH:mm')}">111</span>
+                        </div>
+
+                    </a>
+
+
+                    <hr>
+                </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head>
+    <meta charset="UTF-8">
+    <title>管理哟</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!--导航栏-->
+<div th:replace="~{commons/adcommon::topbar}"></div>
+<!--上面都为顶部导航栏-->
+
+<div class="row">
+    <!--    右边菜单栏-->
+    <div th:replace="~{commons/adcommon::sidebar}"></div>
+
+    <!--    主要部分-->
+    <div class="col-sm-8">
+        <div class="container">
+            <div class="page-header">
+                <h1>分类管理页面</h1><small style="color: red">默认类无法删除</small>
+            </div>
+
+            <a type="btn" class="btn btn-sm btn-default"  id="addclassify" >添加</a>
+
+
+<!--            模态框的连接-->
+            <script>
+                $(function () {
+                    $("#addclassify").click(function () {
+                        $("#addplant").modal({
+                            show:true,
+                            backdrop:'static'
+                        });
+                    });
+                })
+            </script>
+
+<!--            列表的详细信息-->
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>编号</td>
+                        <td>类名</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="classify:${classifies}">
+                        <td th:text="${classify.getId()}">1</td>
+                        <td th:text="${classify.getClassifyname()}">好多类</td>
+                        <td>
+<!--                            操作-->
+                            <a class="btn btn-sm btn-primary" th:if="${classify.id  ne 9}" th:href="@{/toupdateClassify/}+${classify.getId()}">编辑</a>
+                            <a class="btn btn-sm btn-danger" data-toggle="modal"
+                               data-target="#delclassify"
+                               th:data-whatever="${classify.id}">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div  th:if="${classifyupdate eq 1}" class="alert alert-success alert-dismissible update" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>更新成功</strong>
+        </div>
+        <div  th:if="${classifyupdate eq 2}" class="alert alert-warning alert-dismissible repeat" role="alert" id="repeat">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>有重复</strong>
+        </div>
+        <div  th:if="${classifydel eq 1}" class="alert  alert-dismissible delsuccess" role="alert" >
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div  th:if="${classifydel eq 2}" class="alert  alert-dismissible delfail" role="alert" >
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div  th:if="${classifydel eq 7}" class="alert  alert-dismissible delnor" role="alert" >
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div  th:if="${classifyadd eq 1}" class="alert  alert-dismissible addsuccess" role="alert" >
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div  th:if="${classifyadd eq 2}" class="alert  alert-dismissible addfail" role="alert" >
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+    </div>
+</div>
+
+
+<!--添加模态框-->
+<div class="modal fade" tabindex="-1" role="dialog" id="addplant">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!--            标题-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">标签添加</h4>
+            </div>
+            <!--            中心内容-->
+            <form  th:action="@{/addClassify}" method="post">
+                <div class="modal-body">
+
+                    <div class="input-group">
+                        <label for="classifyname">分类名</label>
+                        <input type="text" class="form-control" name="classifyname" required id="classifyname" placeholder="请输入分类名">
+                    </div>
+
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
+                        <button type="submit" class="btn btn-primary">保存更改</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--删除模态框-->
+<div class="modal fade" id="delclassify" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <div >
+                <h2>  确定要删除吗？</h2>
+                <form th:action="@{/delclassify}">
+                <input type="hidden" name="delclassifyid" id="delclassifyid">
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary" id="entermessage" >确认</button>
+                </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+
+
+    $('.update').html('更新成功').addClass('alert-success').show().delay(1200).fadeOut();
+    $('.repeat').html('有重复').addClass('alert-warning').show().delay(1200).fadeOut();
+    $('.delsuccess').html('删除成功').addClass('alert-success').show().delay(1200).fadeOut();
+    $('.delfail').html('删除失败').addClass('alert-warning').show().delay(1200).fadeOut();
+    $('.delnor').html('默认不删').addClass('alert-warning').show().delay(1200).fadeOut();
+    $('.addsuccess').html('添加成功').addClass('alert-success').show().delay(1200).fadeOut();
+    $('.addfail').html('添加失败').addClass('alert-warning').show().delay(1200).fadeOut();
+
+    $("#delclassify").on('show.bs.modal', function (event){
+        var button = $(event.relatedTarget); // 触发事件的按钮
+        var id = button.data('whatever');// 解析出data-whatever内容
+        var modal = $(this);
+        console.log(id);
+        $("#delclassifyid").attr("value",id);
+    });
+
+</script>
+</body>

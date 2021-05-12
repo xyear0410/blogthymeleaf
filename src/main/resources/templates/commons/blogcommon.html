@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+
+
+<style>
+    body{
+
+        background: url("/layui/photo/dim.jpg") no-repeat ;
+        background-size:100% 100%;
+        background-attachment: fixed;
+    }
+</style>
+
+<!-- 导航栏 -->
+<nav class="navbar navbar" style="margin-bottom: 1px;"  th:fragment="blogtopbar">
+    <div class="container-fluid" >
+        <!--       表头-->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--            标题-->
+            <a class="navbar-brand" href="#">0x0博客</a>
+
+        </div>
+
+
+
+        <!--        右上边提示栏-->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a th:href="@{/toblogdindex}">首页 <span class="sr-only">(current)</span></a></li>
+                <li><a th:href="@{/toppersonpage}" sec:authorize="isAuthenticated()">个人中心<span class="sr-only">(current)</span></a></li>
+                <li><a th:href="@{/toaction}" sec:authorize="isAuthenticated()">动态<span class="sr-only">(current)</span></a></li>
+              <li><a th:href="@{/indexclassify}">分类</a></li>
+                <li><a th:href="@{/torecommend}">推荐</a></li>
+            </ul>
+            <div th:if="${active ne  1}">
+            <form th:action="@{/tosearch}" class="navbar-form navbar-left" style="margin-left: 165PX;" >
+                <div class="form-group">
+                    <input type="text" class="form-control" name="text" placeholder="请输入内容">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            </div>
+<!--            判断登录-->
+            <ul class="nav navbar-nav navbar-right" >
+                <li><a href="/toaddbloguser">发博客</a></li>
+                <li class="dropdown" sec:authorize="!isAuthenticated()">
+                <a th:href="@{/tologinn}"> <span>登录</span></a>
+                </li>
+                <li class="dropdown" sec:authorize="isAuthenticated()">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false">
+                        操作
+
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li> <a sec:authentication="principal.name"></a></li>
+                        <li><a href="/logout">注销</a></li>
+                        <li sec:authorize="hasRole('admin')"><a th:href="@{/ad}">管理</a></li>
+                        <li><a href="/tomamsg">个人信息管理</a></li>
+                        <li><a href="#">其他</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">开发中</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+</html>

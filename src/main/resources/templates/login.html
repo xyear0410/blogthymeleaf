@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all" TYPE="text/css"/>
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <style>
+        .layui-input-block {
+            width: 60%;
+        }
+        .layui-form {
+            padding: 20px;
+        }
+        .layui-form-item {
+            margin: 20px;
+        }
+        #login-box {
+            width: 30%;
+            height: 20%;
+            margin: 0 auto;
+            padding-left: 0.1%;
+            margin-top: 15%;
+            text-align: center;
+            background: #00000070;
+        }
+        body {
+            background: url(layui/photo/kkk.jpg);
+            background-repeat: no-repeat;
+            background-size: 100% auto;
+        }
+        #choiceWindow {
+            display:none;
+            position:absolute;
+            top:25%;
+            left:32%;
+            width:30%;
+            height:55%;
+            padding:20px;
+            border:3px solid #ccc;
+            background-color:white;
+            z-index:2;
+            overflow:auto;
+        }
+        #backGround {
+            display:none;
+            position:absolute;
+            top:0%;
+            left:0%;
+            width:100%;
+            height:1100px;
+            background-color:black;
+            z-index:1;
+            -moz-opacity:0.8;
+            opacity:.80;
+            filter:alpha(opacity=88);
+        }
+        #x:hover {
+            cursor:pointer;
+            color:rgb(55,198,192);
+        }
+
+    </style>
+</head>
+
+
+<body>
+  <div   style="text-align: right">
+      <div  th:if="${logincurrent eq 1}" class="alert  alert-dismissible addsu" role="alert" >
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div  th:if="${logincurrent eq 0}" class="alert  alert-dismissible addfa" role="alert" >
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <script>
+          $('.addsu').html('新增成功').addClass('alert-success').show().delay(1200).fadeOut();
+          $('.addfa').html('新增失败').addClass('alert-danger').show().delay(1200).fadeOut();
+      </script>
+  </div>
+<form class="layui-form " th:action="@{/kkp}" id="login-box" method="post">
+    <a style="color: #FFFFFF;">博客登录</a>
+    <p style="color: red" th:if="${param.error}"
+       th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}">
+    </p>
+
+    <!--用户名-->
+    <div class="layui-form-item">
+
+        <label class="layui-form-label layui-icon layui-icon-username"
+               style="color: #ffffff;"></label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="required"
+                   autocomplete placeholder="请输入用户名" class="layui-input ">
+        </div>
+
+    </div>
+
+    <!--密码框-->
+    <div class="layui-form-item">
+        <label class="layui-form-label layui-icon layui-icon-password"
+               style="color: #ffffff;"></label>
+        <div class="layui-input-block">
+            <input type="password" name="password" lay-verify="required"
+                   autocomplete="off" placeholder="请输入密码" class="layui-input">
+        </div>
+    </div>
+    <!--按钮-->
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" type="submit">登录</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+
+    </div>
+    <a th:href="@{/toregisterpage}"  style="color: white;text-decoration: none">没有账号点我</a>
+<!--    <a   id="enroll" style="color: white;text-decoration: none" > 没有账号点我</a>-->
+</form>
+11
+
+
+<div id="choiceWindow">
+    <label id="x" style="position: absolute;top:2px;left: 95%;font-size: 25px;">x</label>
+    <form th:action="@{/webfrontadduser}" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码框</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="1" title="男">男
+                <input type="radio" name="sex" value="0" title="女" checked>女
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="email" name="email" required  lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn layui-btn-normal">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div id="backGround">
+
+</div>
+<script>
+    // $("#enroll").on('click',function () {
+    //     console.log("nihao");
+    // });
+    $("#enroll").click(function() {
+        $("#choiceWindow").slideDown(300);
+        $("#backGround").show();
+
+    });
+
+    $("#x").click(function() {
+        $("#choiceWindow").slideUp(300);
+        $("#backGround").hide();
+    });
+
+
+</script>
+</body>
+</html>

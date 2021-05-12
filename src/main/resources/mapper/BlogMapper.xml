@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tgxyear.mapper.BlogMapper">
+    <insert id="insertBlogadmin" >
+		insert into blog(title,content,picture,createtime,updatetime) values (#{title},#{content},#{picture},#{createtime},#{updatetime})
+	</insert>
+<!--	更新点赞数-->
+	<update id="updateBgreatById">
+		UPDATE blog SET bgreat =#{bgreat} WHERE blog.id =#{bid}
+	</update>
+	<select id="getallblogusers" resultType="com.tgxyear.pojo.BlogVo">
+		SELECT
+			`user`.`name`,
+			blog.*
+		FROM
+			blog
+				LEFT JOIN `user` ON `user`.id = blog.uid
+		ORDER BY
+			blog.createtime DESC
+	</select>
+
+	<select id="getallmessage" resultType="com.tgxyear.pojo.Blog" >
+SELECT
+	blog.id,
+	blog.title,
+	blog.content,
+	blog.picture,
+	blog.createtime,
+	blog.updatetime,
+FROM
+	blog
+    </select>
+
+	<!--获取最大值用来更新-->
+	<select id="getmaxBid" resultType="java.lang.Integer">
+		select id From blog where id = (select max(id) from blog)
+	</select>
+	<!--获取根据博客id来获得作者名字-->
+	<select id="findima" resultType="java.lang.String" parameterType="int">
+		SELECT blog.picture  FROM blog where id =#{id}
+
+	</select>
+<!--	截取部分-->
+    <select id="cutblogcontent" resultType="com.tgxyear.pojo.Blog">
+SELECT id,title,substring(content ,1,50)as content,picture,createtime FROM blog
+	</select>
+
+<!--	获取所有的博客-->
+    <select id="selectPageText" resultType="com.tgxyear.pojo.Blog">
+ SELECT blog.id,blog.title,blog.picture,blog.view,blog.bgreat,user.name,substring(content ,1,100)as content,blog.createtime
+FROM blog,`user`
+WHERE blog.uid =`user`.id
+ORDER BY  createtime DESC
+	</select>
+    <select id="selectblogmsg" resultType="com.tgxyear.pojo.BlogVo">
+SELECT
+	blog.id,
+	blog.title,
+	blog.content,
+	blog.`view`,
+	blog.bgreat,
+	blog.uid,
+	blog.classifyid,
+	`user`.`name`,
+	blog.picture,
+	classify.classifyname,
+    blog.createtime,
+    blog.updatetime
+FROM
+	blog,
+	`user`,
+	classify
+WHERE
+	blog.uid = `user`.id AND
+	blog.classifyid = classify.id AND
+	blog.id = #{bid}
+
+	</select>
+	<select id="selectoneblog" resultType="com.tgxyear.pojo.Blog">
+ SELECT blog.id,blog.title,blog.picture,blog.view,blog.bgreat,user.name,substring(content ,1,100)as content,blog.createtime,blog.updatetime
+FROM blog
+LEFT JOIN `user` ON blog.uid =`user`.id
+WHERE blog.uid=#{uid}
+order by blog.createtime desc
+	</select>
+	<select id="selectonePageText" resultType="com.tgxyear.pojo.Blog">
+		 SELECT blog.id,blog.title,blog.picture,blog.view,blog.bgreat,user.name,substring(content ,1,100)as content,blog.createtime
+FROM blog,`user`
+WHERE blog.uid =`user`.id
+and blog.uid =#{uid}
+order by blog.createtime desc
+	</select>
+    <select id="selectadpageblog" resultType="com.tgxyear.pojo.Blog" >
+SELECT
+	*
+FROM
+	blog
+WHERE TRUE
+		<if test="title!=null">  AND blog.title LIKE CONCAT('%',#{title},'%')</if>
+		<if test="name!=null">
+		AND blog.uid = any(SELECT `user`.id FROM `user` WHERE `user`.`name` LIKE CONCAT('%',#{name},'%'))</if>
+order  by blog.createtime desc
+	</select>
+	<select id="countselectadpageblog" resultType="java.lang.Integer">
+		SELECT
+		COUNT(blog.id)
+		FROM
+		blog
+		WHERE TRUE
+		<if test="title!=null">  AND blog.title LIKE CONCAT('%',#{title},'%')</if>
+		<if test="name!=null">
+			AND blog.uid = any(SELECT `user`.id FROM `user` WHERE `user`.`name` LIKE CONCAT('%',#{name},'%'))</if>
+	</select>
+    <select id="actionblog" resultType="com.tgxyear.pojo.Blog">
+	SELECT blog.id,blog.title,substring(content ,1,50)as content,blog.picture,blog.`view`,bgreat,classifyid,blog.uid,createtime,updatetime
+FROM blog
+WHERE uid = '1'
+OR uid IN (SELECT  noticeid  FROM follow WHERE followid ='1')
+ORDER BY blog.createtime DESC
+
+	</select>
+	<select id="actionbloguser" resultType="com.tgxyear.utils.BlogUser">
+SELECT blog.id,blog.title,substring(content ,1,100)as content,blog.`view`,bgreat,classifyid,blog.uid,`user`.`name`,`user`.userpic,blog.picture,createtime,updatetime
+FROM blog
+LEFT JOIN `user` ON blog.uid =`user`.id
+WHERE uid = #{uid}
+OR uid IN (SELECT  noticeid  FROM follow WHERE followid =#{uid})
+ORDER BY blog.createtime DESC
+
+	</select>
+
+
+	<select id="countactionbloguser" resultType="int">
+		SELECT COUNT(blog.id)
+		FROM blog
+				 LEFT JOIN `user` ON blog.uid =`user`.id
+		WHERE uid = #{uid}
+		   OR uid IN (SELECT  noticeid  FROM follow WHERE followid = #{uid})
+		ORDER BY blog.createtime DESC
+	</select>
+
+	<select id="searchuserlike" resultType="com.tgxyear.utils.SearchUser">
+		SELECT `user`.id,`user`.`name`,`user`.userpic,COUNT(blog.title)AS countuser
+		FROM `user`
+		LEFT JOIN  blog ON blog.uid =`user`.id
+		WHERE `user`.`name` LIKE  CONCAT('%',#{text},'%')
+		GROUP  BY `user`.id
+	</select>
+</mapper>
+

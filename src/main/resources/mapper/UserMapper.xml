@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tgxyear.mapper.UserMapper">
+<!--    更新-->
+    <update id="updateuser" parameterType="com.tgxyear.pojo.User">
+        update `user` set  username=#{username},password=#{password},name=#{name},sex=#{sex},email=#{email},enabled=#{enable} where id =#{id}
+    </update>
+	<update id="updateallById" parameterType="com.tgxyear.pojo.User">
+		 update `user` set  username=#{username},password=#{password},name=#{name},sex=#{sex},email=#{email},userpic=#{userpic} where id =#{id}
+	</update>
+
+	<select id="loadUserByUserByUsername" resultType="com.tgxyear.pojo.User">
+        select * from user where username=#{username}
+    </select>
+    <select id="getUserRolesByUid" resultType="com.tgxyear.pojo.Role">
+        select * from role r ,user_role ur where r.id=ur.rid and ur.uid=#{id}
+    </select>
+    <select id="getoneUserid" resultType="java.lang.Integer">
+        select id from user where name =#{name}
+    </select>
+    <select id="getUsername" resultType="java.lang.String">
+        SELECT user.name FROM user WHERE user.id= #{id}
+    </select>
+    <select id="getcommentname" resultType="com.tgxyear.pojo.User">
+        SELECT `user`.`name` FROM `user`,`comment`,blog
+WHERE `user`.id =`comment`.uid AND
+`comment`.bid =blog.id
+AND blog.id =#{id}
+    </select>
+    <select id="selectoneuser" resultType="com.tgxyear.pojo.User">
+     SELECT
+	`user`.id,
+	`user`.username,
+	`user`.`password`,
+	`user`.`name`,
+	`user`.sex,
+	`user`.email,
+	`user`.userpic,
+	`user`.enabled,
+	`user`.locked
+	FROM
+	`user`
+WHERE
+	`user`.id = #{uid}
+    </select>
+    <select id="selectpageuser" resultType="com.tgxyear.pojo.User">
+		SELECT `user`.id ,`user`.`name`,`user`.userpic FROM `user`
+		WHERE true
+		<if test="name!=null"> and `user`.`name` like concat('%',#{name},'%') </if>
+
+	</select>
+	<select id="countselectpageuser" resultType="int">
+		SELECT
+		COUNT(id)
+		FROM
+		`user`
+		WHERE true
+		<if test="name!=null"> and `user`.`name` like concat('%',#{name},'%') </if>
+
+	</select>
+
+    <select id="selectadpageuser" resultType="com.tgxyear.pojo.User"
+			>
+SELECT
+	`user`.id,
+	`user`.username,
+	`user`.`password`,
+	`user`.`name`,
+	`user`.sex,
+	`user`.email,
+	`user`.enabled,
+	`user`.locked
+FROM
+	`user`
+	where true
+	<if test="name!=null"> and `user`.`name` like concat('%',#{name},'%') </if>
+    <if test="username!=null">and `user`.username like concat('%',#{username},'%') </if>
+
+    </select>
+	<select id="countadpageuser" resultType="java.lang.Integer">
+	SELECT
+	COUNT(id)
+	FROM
+	`user`
+	WHERE true
+		<if test="name!=null"> and `user`.`name` like concat('%',#{name},'%') </if>
+		<if test="username!=null">and `user`.username like concat('%',#{username},'%') </if>
+	</select>
+    <select id="getuserphoto" resultType="java.lang.String">
+
+		SELECT `user`.userpic FROM `user` WHERE `user`.id =#{uid}
+	</select>
+
+	<select id="getpassword" resultType="String">
+		select password from `user` where `user`.id =#{uid}
+	</select>
+
+	<select id="getmyusermsg" resultType="com.tgxyear.pojo.User">
+		SELECT
+			`user`.id,
+			`user`.username,
+			`user`.`password`,
+			`user`.`name`,
+			`user`.sex,
+			`user`.email,
+			`user`.userpic
+		FROM
+			`user`
+		where `user`.id=#{uid}
+	</select>
+</mapper>

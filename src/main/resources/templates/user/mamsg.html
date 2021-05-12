@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息管理</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <script src="/layui/layui.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap-show-password.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</head>
+<style>
+    body{
+        background: url("/layui/photo/dim.jpg") no-repeat ;
+        background-size:100% 100%;
+        background-attachment: fixed;
+    }
+
+</style>
+
+<body>
+<!-- 导航栏 -->
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+
+<div class="page-header text-center">
+    <h1>个人信息管理 <small>注意记得账号密码哦</small></h1>
+</div>
+        <div class="col-sm-offset-4 col-sm-4 col-sm-offset-4">
+
+        <form th:action="@{/subusermsg}" method="post">
+            <input type="hidden" name="id" th:value="${user.getId()}">
+            <div class="form-group">
+                <label >用户名:</label>
+                <input type="text" class="form-control" name="username"  th:value="${user.username}">
+            </div>
+            <div class="form-group">
+                <label >密码</label>
+                <input data-attr="show-password" class="form-control" name="password" type="password"
+                       th:value="${user.password}"
+                       placeholder="密码">
+            </div>
+            <div class="form-group">
+                <label>昵称</label>
+                <input type="text" class="form-control" name="name" th:value="${user.name}">
+            </div>
+
+            <div class="form-group">
+                <label >性别</label>
+                <label class="checkbox-inline">
+                    <input th:checked="${user.getSex()==1}"  type="radio" class="form-control" name="sex" value="1" >男
+                </label>
+                <label class="checkbox-inline">
+                    <input th:checked="${user.getSex()==0}" type="radio" class="form-control" name="sex" value="0">女
+                </label>
+            </div>
+            <div class="form-group">
+                <label>邮箱</label>
+                <input th:value="${user.email}" type="email" name="email" class="form-control">
+            </div>
+
+
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                头像选择
+            </button>
+            <img th:src="@{${user.getUserpic()}}" id="currentimg" class="img-circle" style="width: 70px;height: 70px;">
+                <input name="userpic" type="hidden" id="userpic" class="form-control">
+
+
+            <button type="submit" class="btn btn-default" >提交</button>
+
+        </form>
+        </div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">头像选择</h4>
+            </div>
+            <div class="modal-body">
+
+                <hr>
+                当前头像：
+
+                <img th:src="@{${user.getUserpic()}}" id="logo" class="img-circle" style="width: 70px;height: 70px;">
+
+                <div th:each="photo : ${photos}" style="width: 200px;">
+                    <img th:src="@{${photo.getPhoto()}}" th:value="${photo.getPhoto()}" class="img-circle" style="width: 70px;height: 70px;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $('[data-attr="show-password"]').password({
+        placement: 'after',
+        eyeClass: 'material-icons',
+        eyeOpenClass: '显示',
+        eyeCloseClass: '关闭',
+        eyeClassPositionInside: true,
+        message: '点击隐藏或显示密码'
+    });
+
+
+    $(document).on("click","div>img",function() {
+        $("#logo").attr("src",$(this).attr("src"));
+        $("#currentimg").attr("src",$(this).attr("src"));
+        $("#userpic").attr("value",$(this).attr("src"));
+    })
+
+    $("#save").on("click",function (){
+
+    });
+
+</script>
+</body>
+</html>

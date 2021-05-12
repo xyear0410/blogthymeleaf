@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="col-sm-offset-2 col-sm-8 col-sm-offset-2">
+<form id="reform" th:action="@{/webfrontadduser}" method="post">
+
+    <div class="page-header">
+        <h1>用户注册 <small>要记住账号密码哦</small></h1>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" name="password" id="password" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+            <label for="name">姓名</label>
+            <input type="text" class="form-control" name="name" id="name" placeholder="请输入姓名">
+        </div>
+        <div class="form-group">
+            性别: <input type="radio" name="sex" checked value="0">女
+            <input type="radio" name="sex" checked value="1">男
+        </div>
+        <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" class="form-control" name="email" id="email" placeholder="请输入邮箱">
+        </div>
+    </div>
+
+    <!--            尾部-->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
+        <button type="submit" class="btn btn-primary">新建</button>
+    </div>
+</form>
+    </div>
+</div>
+
+<script>
+    $('#reform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            username: {
+                message: '用户名验证失败',
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 18,
+                        message: '用户名长度必须在6到18位之间'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_]+$/,
+                        message: '用户名只能包含大写、小写、数字和下划线'
+                    }
+                }
+            },
+            email: {
+                validators: {
+                    notEmpty: {
+                        message: '邮箱不能为空'
+                    },
+                    emailAddress: {
+                        message: '邮箱地址格式有误'
+                    }
+                }
+            },
+            password: {
+                validators:{
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 18,
+                        message: '密码长度必须在6到18位之间'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_]+$/,
+                        message: '用户名只能包含大写、小写、数字和下划线'
+                    }
+                }
+            },
+            name: {
+                validators: {
+                    notEmpty: {
+                        message: '昵称不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 10,
+                        message: '昵称长度必须在6到10位之间'
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

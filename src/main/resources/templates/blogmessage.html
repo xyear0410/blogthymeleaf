@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head>
+    <meta charset="UTF-8">
+    <title>博客列表</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/blogmessage.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+
+
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .alert1{
+            display: none;
+        }
+        .alert2{
+            display: none;
+        }
+        .content1{
+            width: 170px;height: auto
+        }
+        .btnsub{
+            display: inline;
+        }
+        a{text-decoration:none;}
+
+    </style>
+</head>
+
+
+<body>
+<!--导航栏-->
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+
+<!--下方本体的主要内容-->
+<div class="container-fluid" >
+<!--    左边侧边栏-->
+    <div class="col-sm-2">
+
+<!--        博客id值为:<a th:text="${kos}"></a>-->
+<!--    <p><a class="btn btn-sm btn-primary" th:href="@{/toblogdindex}">返回</a></p>-->
+        <p></p>
+
+
+    </div>
+    <!--        中间栏-->
+    <div class="col-sm-7" >
+        <div class="page-header">
+            <h2 th:text="${blogones.getTitle()}"></h2>
+        </div>
+        <div class="container-fluid">
+            <div class="col-sm-2" th:text="${#dates.format(blogones.getCreatetime(),'yyyy-MM-dd HH:mm:ss')}"></div>
+          <div  class="col-sm-6 ">
+              <span class="label label-default" th:if="${blogones.getByperson() == 1}" >原创</span>
+              <span class="label label-default" th:if="${blogones.getByperson() == 0}" >转载</span>
+              <div class="layui-btn  layui-btn-xs layui-btn-radius layui-btn-warm"   th:text="${Bclinks}" style="text-align: left"></div>
+              <div class="label label-info" th:each=" great:${getbloglabel}"
+                    th:text="${great.getLabelname()}"></div>
+
+          </div>
+            <div style="text-align: right" >作者=》</div>
+        </div>
+<!--        标签-->
+
+
+        <br>
+            <div class="text-center">
+               <img th:src="@{${blogones.getPicture()}}" style="width: 50%;height: 100%;">
+            </div>
+        <p></p>
+
+
+        <span th:utext="${blogones.getContent()}"></span>
+        <div class="alert alert-info" role="alert"  th:if="${blogones.getByperson() == 0}">
+            转载地址:
+            <a
+                th:href="@{${blogones.getUrl()}}" th:text="${blogones.getUrl()}"></a>
+        </div>
+        <br>
+            <div style="padding-top: 10px;padding-bottom: 20px">
+                 <input type="hidden" th:value="${live}" id="live" />
+                    <input type="button" id="like"  style="border: none;
+    height: 30px;padding: 5px 10px; margin-top: -5px;
+    float: left;margin-right: 10px;font-weight: bolder"
+                           value="点赞"/>
+                 <span class="layui-icon layui-icon-praise great"></span> <span id="greatdata" th:text="${blogones.getBgreat()}">22223</span>
+                    <span class="layui-icon layui-icon-read" th:text="${blogones.getView()}">8</span>
+                <!--        提示框-->
+                <div class="alert alert1 alert-warning alert-dismissible commentnull" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>警告！</strong> 评论不能为空
+                </div>
+                <div class="alert alert2 alert-success alert-dismissible commentsucess" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    评论成功
+                </div>
+            </div>
+
+<!--        评论-->
+        <div class="row">
+             <div class="col-sm-8" id="comment-container" >
+            <!--    评论列表-->
+            <div th:fragment="commentList">
+                <div class="container" th:each="comment : ${comments}">
+                    <ul class="media-list" style="margin-bottom: 10px;">
+                        <li class="media">
+                            <div class="media-left">
+                                    <img class="media-object img-circle"  th:src="@{${comment.avater}}" alt="..." style="width: 66px;height: 61px;">
+
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading" th:text="${comment.getUname()}">Media heading</h4>
+                                <div class="text" th:text="${comment.getContent()}">
+                                    愿你走出半生，归来仍是少年！
+                                </div>
+
+                                <!--回复按钮-->
+                                <div  style="margin-top: 10px;">
+                                    <span th:text="${#dates.format(comment.createtime,'yyyy-MM-dd HH:mm')}"></span>
+                                    <a class="btn btn-xs btn-primary" style="text-decoration: none" data-commentid="1" data-commentnickname="Matt"
+                                       th:attr="data-commentid=${comment.id},data-commentnickname=${comment.uname}"
+                                        onclick="reply(this)">回复</a>
+
+
+                                </div>
+
+<!--                                子评论-->
+                                <div style="margin-top: 10px;"  th:if="${#arrays.length(comment.replyComments)}>0">
+                                     <div class="media" th:each="reply : ${comment.replyComments}">
+
+                                         <div class="media-left">
+                                            <a href="#">
+                                                <img class="media-object photosize img-circle" th:src="@{${reply.avater}}" alt="..." style="width: 66px;height: 61px;">
+                                            </a>
+                                         </div>
+                                                 <div class="media-body">
+                                                     <h4 class="media-heading"><span th:text="${reply.uname}">小白</span>
+                                                         &nbsp;<span th:text="|@ ${reply.parentNickname}|" class="m-teal">@ 小红</span>
+                                                     </h4>
+                                                        <p th:text="${reply.content}">淦tm 的  燃起来</p>
+
+                                                     <!--回复按钮-->
+                                                     <div style="margin-top: 10px;">
+                                                         <span th:text="${#dates.format(reply.createtime,'yyyy-MM-dd HH:mm')}">sss</span>
+                                                         <a  data-commentid="1" data-commentnickname="Matt" class="btn btn-xs btn-primary"
+                                                             th:attr="data-commentid=${reply.id},data-commentnickname=${reply.uname}" onclick="reply(this)">回复</a>
+
+                                                     </div>
+                                                 </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <p></p>
+            <!--    评论内容-->
+
+        </div>
+
+            <div class="col-sm-4" style="text-align: right">
+
+            </div>
+
+        </div>
+
+        <!--        提交表单-->
+        <form>
+            <div class="form-group" id="subform">
+                <!--            bid的值-->
+                <input type="hidden" name="parentComment.id" value="-1">
+                <input type="hidden" th:value="${kos}" name="bid" id="bid">
+                <input type="hidden" th:value="${uid}" name="uid" id="uid">
+                <div th:if="${comment == 1}">
+            <textarea name="content" id="content" class="content1 form-control"
+                      style="width: 75%;height: 200px; resize: none;
+                      opacity: 0.5;color: #0C0C0C"
+
+                      required placeholder="请输入评论信息" ></textarea>
+                    <p>
+                    </p>
+                    <button type="submit" class="btn btn-primary btn-default btnsub" value="提交" id="commentsub1" data-dismiss="alert">提交</button>
+                </div>
+                <div th:if="${comment == 0}">
+                    你已经被禁言
+                </div>
+            </div>
+        </form>
+
+
+
+<!--        评论js-->
+        <script>
+            //点击按钮提交触发的提示
+            $("#commentsub1").click(function (data) {
+                console.log(data);
+                //验证提交是否为空
+                if ($("#content").val() == ""){
+                    $('.alert1').css("display","block");
+                    console.log("为空");
+                    $('.commentnull').html('评论为空').addClass('alert-warning').show().delay(1200).fadeOut();
+                }
+                else {
+                    $('.alert1').css("display","none");
+                    $('.alert2').css("display","block");
+                    console.log("校验成功");
+                    postData();
+                    $('.commentsucess').html('评论成功').addClass('alert-success').show().delay(1200).fadeOut();
+
+                }
+            })
+
+            function cleancontent() {
+                $("[name='content']").val('');
+            }
+            //提交
+            function postData() {
+                $("#comment-container").load("[[@{/addcomment}]]",{
+                    "parentComment.id" : $("[name='parentComment.id']").val(),
+                    "content" : $("[name='content']").val(),
+                    "bid" : $("[name ='bid']").val(),
+                    "uid" : $("[name ='uid']").val(),
+
+                },function (responseTxt, statusTxt, xhr) {
+                    // $(window).scrollTo($('#goto'),0);
+                    cleancontent();
+                });
+            }
+
+            //回复
+            function reply(obj) {
+                var commentId = $(obj).data('commentid');
+                var commentnickname = $(obj).data('commentnickname');
+                // alert(commentnickname+"id"+commentId);
+                $("[name='content']").attr("placeholder", "@"+commentnickname).focus();
+                $("[name='parentComment.id']").val(commentId);
+                // $(window).scrollTo($('#subform'),10);
+            }
+
+
+        </script>
+    </div>
+    <div class="col-sm-1" style="text-align: center">
+        <a th:href="@{/topersonpage/}+${blogones.getUid()}">
+        <img th:src="@{${user.getUserpic()}}" alt="..." class="img-circle"  style="width: 70%;height: 14%;margin-top: 82px;" >
+        </a>
+        <br>
+                <div style="text-align: center">
+                    <div  th:text="${user.name}">hhsd</div>
+                粉丝数:<span id="follownum"   th:text="${noticeid}">111</span>
+                </div>
+        <br>
+<!--        关注的地方-->
+        <div th:if="${in ne out}">
+            <input type="hidden" th:value="${out}" id="followid">
+            <input type="hidden" th:value="${in}" id="noticeid">
+            <input type="hidden" th:value="${followcount}" id="followcount">
+            <input type="button" id="follow"  style="border: none;
+    height: 30px;padding: 5px 10px; margin-top: -5px;
+    float: left;margin-right: 10px;font-weight: bolder" value="关注"/>
+        </div>
+<!--        <div th:each=" recommend : ${recommends}">-->
+<!--            <div th:text="${recommend.getTitle()}"></div>-->
+<!--            <img th:src="@{${recommend.getPicture()}}" style="width: 140px;height: 91px;">-->
+<!--            <div th:text="${recommend.getView()}"></div>-->
+<!--            <div th:text="${recommend.getBgreat()}"></div>-->
+<!--        </div>-->
+    </div>
+    <div class="col-sm-2">
+
+
+    </div>
+</div>
+
+<script>
+    var index=$("#live").val();
+    console.log(index);
+
+    // 点赞按钮的判断
+    if (index == 0) {
+        status = "点赞";
+        $("#like").attr("value", status);
+    }else if (index==1){
+        status = "取消点赞";
+        $("#like").attr("value", status);
+    }
+    //关注按钮的判断
+    var followid =$("#followcount").val();
+    console.log("followid=>"+followid);
+    var followstatus;
+    if (followid==0){
+        followstatus="关注";
+        $("#follow").attr("value",followstatus);
+    }else if (followid==1){
+        followstatus="取消关注";
+        $("#follow").attr("value",followstatus);
+    }
+
+    console.log("uid"+$("#uid").val());
+    console.log("bid"+$("#bid").val());
+$("#like").click(function () {
+    var bid =$("#bid").val();
+    var uid=$("#uid").val();
+    var status;
+    if (index == 0){
+        status ="取消点赞";
+        index =1;
+    }else if (index==1){
+        status = "点赞";
+        index =0;
+    }
+    $.ajax({
+        url:"/like",
+        type:"post",
+        data:{bid:bid,index:index},
+        success: function (output) {
+            console.log(output);
+            $("#greatdata").text("");
+            $("#greatdata").append(output);
+        }
+    });
+    $(this).attr("value", status);
+})
+
+$("#follow").on('click',function () {
+    //当前使用者，即可以理解成关注者
+    var uid=$("#followid").val();
+
+    //被关注者
+    var noticeid=$("#noticeid").val();
+    console.log("uid=>"+uid);
+    console.log("noticeid=>"+noticeid);
+    if (followid==0){
+        followstatus="取消关注";
+        console.log(followstatus);
+        followid=1;
+    }else if (followid==1){
+        followstatus="关注";
+        followid=0;
+        console.log(followstatus);
+    }
+    $.ajax({
+        url:"/Followfun",
+        type:"post",
+        data:{followed:uid,
+            noticeid:noticeid,
+            followid:followid},
+        success: function (data) {
+            $("#follownum").text("");
+            $("#follownum").append(data);
+        }
+    })
+
+    $(this).attr("value", followstatus);
+})
+
+
+
+
+</script>
+
+<!--内嵌-->
+<script th:inline="javascript">
+    //加载！！！！！是在页面加载后,调用控制层的方法
+    $(function () {
+        $("#comment-container").load("/toblogmessage/comment");
+        console.log("经过了/toblogmessage/comment");
+    });
+</script>
+</body>
+</html>

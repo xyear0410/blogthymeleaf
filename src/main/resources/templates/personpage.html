@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<!--http://www.w3.org/1999/html-->
+<!--http://www.thymeleaf.org-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <script src="/layui/layui.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .topimage{
+            margin-top: 20px;
+            height: 390px;
+            width: 100%;
+            background:url("/image/water3.jpg")  no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .toptext{
+            text-align: center;
+            color: #a79595;
+        }
+        .mymessage{
+            text-align: center;
+        }
+        .media{
+            border:0px solid #b3adad;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            position: relative;
+            background-color:rgba(255,255,255,0.1);
+            height: 231px;
+        }
+        .media-heading{
+            font-size: 31px;
+            display: inline;
+            margin-left: 27px;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+
+<div class="container">
+
+    <div class="jumbotron topimage">
+        <h1 class="toptext" style="margin-top: 50px;"><span th:text="${user1.getName()}"></span>的博客</h1>
+        <p class="toptext">欢迎到来<span th:text="${user1.getName()}"></span>的博客哦</p>
+
+        <p th:if="${in eq out}" class="toptext">
+            <a class="btn btn-primary btn-lg " href="#" role="button" style="align-content: center">欢迎回来</a></p>
+        <p th:if="${in ne out}" class="toptext">
+
+<!--            <a class="btn btn-primary btn-lg "  role="button" style="align-content: center">关注我</a>-->
+            <input type="button" id="follow"  class="btn btn-primary btn-lg" style="align-content: center" value="关注"/>
+
+        </p>
+
+    </div>
+
+    <br style="margin-top: 10px;">
+    <div class="row blogcontent">
+        <div class="col-sm-9">
+            <h3>博客列表</h3>
+            <div class="media" th:each="list : ${lists}"  style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+                <a  th:href="@{/toblogmessage/}+${list.getId()}" style="text-decoration-color: white">
+                <div class="media-body" style="height: 100%">
+                    <div class="media-heading"  th:text="${list.getTitle()}"></div>
+                        <div style="font-size: 20px; margin-top: 20px;margin-left: 50px;height: 50px;
+                                                font-weight: lighter;padding-left: 25px; color: #0a8652;" th:utext="${list.getContent()}"></div>
+                </div>
+                    <div class="media-right ">
+                        <img class="mymessage" th:src="@{${list.getPicture()}}" alt="没图片"
+                             style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-right: 8px;border-radius: 20px;">
+                    </div>
+                    <div class="media-bottom">
+                        <div style="padding-left: 15px;">
+                            <div class="glyphicon glyphicon-hand-right"></div>  <span th:text="${list.getBgreat()}">11</span>
+                            <div class="glyphicon glyphicon-eye-open"><span th:text="${list.getView()}">231</span> </div>
+                            <!--            创建日期-->
+                            <div class="glyphicon glyphicon-dashboard" >[[${#dates.format(list.getCreatetime(),'yyyy-MM-dd HH:mm:ss')}]]</div>
+                        </div>
+                    </div>
+                </a>
+                <hr>
+            </div>
+
+    </div>
+    <div class="col-sm-3 mymessage" style="background-color: rgba(206,198,198,0.1);">
+        <div style="margin-top: 10px;">
+        <img th:src="@{${user1.getUserpic()}}" alt="..." class="img-circle "  style="width: 131px;height: 125px; " >
+            <br>
+             粉丝数:<span id="follownum" th:text="${noticeid}">111</span>
+            点赞数:<span th:text="${countgreat}">2222</span>
+          <hr>
+            <div class="list-group" style="color: whitesmoke;margin: 6px 30px auto 30px;">
+                <div style="color: black">
+                    <span th:text="${user1.getName()}"></span> <br>
+               性别：<span  th:text="${user1.getSex()}==0?'女':'男'"></span>
+               <p></p> 邮箱:<span  th:text="${user1.getEmail()}"></span>
+                </div>
+            </div>
+
+
+            <div th:if="${in ne out}">
+                <input type="hidden" th:value="${out}" id="followid">
+                <input type="hidden" th:value="${in}" id="noticeid">
+                <input type="hidden" th:value="${followcount}" id="followcount">
+<!--                <input type="button" id="follow"  style="border: none;-->
+<!--    height: 30px;padding: 5px 10px; margin-top: -5px;-->
+<!--    float: left;margin-right: 10px;font-weight: bolder" value="关注"/>-->
+            </div>
+            <div th:if="${in eq out}">
+                <div>这是你哦!</div>
+            </div>
+        </div>
+
+
+
+
+        <div th:if="${in eq out}">
+            <!--						<a th:href="@{/toblogmessage/}+${blink.getId()}" style="text-decoration:none;">-->
+            <div class="row">
+                <div class="col-sm-6" style="text-align: center">
+                    <a class="btn btn-default" style="text-align: center;">博客管理</a> </div>
+                <div class="col-sm-6"  style="text-align: center">
+                    <a class="btn btn-default" style="text-align: center;" th:href="@{/tomamsg}">个人信息管理</a> </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+</div>
+
+
+
+
+<script>
+    var followid =$("#followcount").val();
+    console.log("followid=>"+followid);
+    var followstatus;
+    if (followid==0){
+        followstatus="关注";
+        $("#follow").attr("value",followstatus);
+    }else if (followid==1){
+        followstatus="取消关注";
+        $("#follow").attr("value",followstatus);
+    }
+
+    $("#follow").on('click',function () {
+        //当前使用者，即可以理解成关注者
+        var uid=$("#followid").val();
+        //被关注者
+        var noticeid=$("#noticeid").val();
+        console.log("uid=>"+uid);
+        console.log("noticeid=>"+noticeid);
+        if (followid==0){
+            followstatus="取消关注";
+            followid=1;
+        }else if (followid==1){
+            followstatus="关注";
+            followid=0;
+        }
+        $.ajax({
+            url:"/Followfun",
+            type:"post",
+            data:{followed:uid,
+                noticeid:noticeid,
+                followid:followid},
+            success: function (data) {
+                $("#follownum").text("");
+                $("#follownum").append(data);
+            }
+        })
+
+        $(this).attr("value", followstatus);
+    })
+</script>
+</body>
+</html>

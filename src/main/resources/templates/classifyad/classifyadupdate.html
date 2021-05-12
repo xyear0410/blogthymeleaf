@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+<div th:replace="~{commons/adcommon::topbar}"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="~{commons/adcommon::sidebar}"></div>
+        <div class="col-sm-10">
+            <form th:action="@{/updateclassify}" method="post">
+                <input type="hidden" th:value="${classify.getId()}" name="id">
+               <label for="classifyname">分类名</label>
+                <input type="text" id="classifyname" name="classifyname" required th:value="${classify.getClassifyname()}">
+                <button type="submit" class="btn btn-sm btn-primary">更新</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

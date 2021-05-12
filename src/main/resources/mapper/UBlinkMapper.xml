@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tgxyear.mapper.UBlinkMapper">
+	<insert id="insertub">
+		insert into u_blink(uid,bid) value (#{uid},#{bid})
+	</insert>
+
+
+	<select id="getalls" resultType="com.tgxyear.pojo.UBlink">
+        SELECT blog.id,blog.title,blog.picture,blog.view,blog.bgreat,user.name,substring(content ,1,50)as content,blog.createtime,blog.updatetime,u_blink.bid,u_blink.uid
+FROM blog
+LEFT JOIN u_blink ON u_blink.bid =blog.id
+LEFT JOIN user ON u_blink.uid=user.id
+    </select>
+
+    <!--根据bid来，获取uid的值，用来获取用户信息-->
+    <select id="getuID" resultType="java.lang.Integer">
+        SELECT u_blink.uid FROM u_blink WHERE bid = #{id}
+    </select>
+
+<!--	获取所有用户-->
+    <select id="getalluser" resultType="com.tgxyear.pojo.User">
+        SELECT
+	user.id,
+	user.username,
+	user.password,
+	user.name,
+	user.sex,
+	user.email,
+	user.enabled,
+	user.locked
+FROM
+	user
+	LEFT JOIN user_role ON user.id=user_role.uid
+	LEFT JOIN role ON user_role.rid=role.id
+WHERE role.id='3'
+    </select>
+	<select id="selectPageText" resultType="com.tgxyear.pojo.UBlink">
+ SELECT blog.id,blog.title,blog.picture,blog.view,blog.bgreat,user.name,substring(content ,1,50)as content,blog.createtime,blog.updatetime,u_blink.bid,u_blink.uid
+FROM blog
+LEFT JOIN u_blink ON u_blink.bid =blog.id
+LEFT JOIN user ON u_blink.uid=user.id
+	</select>
+
+
+</mapper>

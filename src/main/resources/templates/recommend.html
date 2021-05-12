@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>推荐</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <script src="/layui/layui.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <style>
+        body{
+            background: url("/layui/photo/dim.jpg") no-repeat ;
+            background-size:100% 100%;
+            background-attachment: fixed;
+        }
+        .media-heading{
+            font-size: 31px;
+            display: inline;
+            margin-left: 27px;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+<div class="container layui-anim layui-anim-up ">
+    <div class="row">
+        <div th:if="${records.size() gt 3}">
+            <div>
+                <div class="media" th:each=" daliy : ${daliys}" style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+                    <a th:href="@{/toblogmessage/}+${daliy.getId()}" style="text-decoration:none;">
+                        <div class="media-body" style="height: 100%">
+                            <div class="media-heading" th:text="${daliy.getTitle()}"></div>
+                            <br>
+                            <div  style="font-size: 20px; margin: 30px;margin-left: 50px;height: 50px;
+											font-weight: lighter;padding-left: 25px; color: #0a8652; "
+                                  th:utext="${daliy.getContent()}"></div>
+                        </div>
+                        <div class="media-right"><img class="media-object" th:src="@{${daliy.getPicture()}}"
+                                                      style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-right: 8px;border-radius: 20px;"
+                                                      alt="...">
+                        </div>
+                        <div class="media-bottom" style="margin-left: 10px;">
+                            <span class="layui-icon layui-icon-praise great">[[${daliy.getBgreat()}]]</span>
+                            <span class="layui-icon layui-icon-read">[[${daliy.getView()}]]</span>
+                            <span th:text="${#dates.format(daliy.getCreatetime(),'yyyy-MM-dd HH:mm')}">111</span>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div th:if="${records.size() le 3}">
+            <div class="media"  th:each="record : ${records}" style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+                <a th:href="@{/toblogmessage/}+${record.getId()}" style="text-decoration:none;">
+                    <div class="media-body" style="height: 100%">
+                        <div class="media-heading" th:text="${record.getTitle()}"></div>
+                        <br>
+                        <div  style="font-size: 20px; margin: 30px;margin-left: 50px;height: 50px;
+											font-weight: lighter;padding-left: 25px; color: #0a8652; "
+                              th:utext="${record.getContent()}"></div>
+                    </div>
+                    <div class="media-right"><img class="media-object" th:src="@{${record.getPicture()}}"
+                                                  style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-right: 8px;border-radius: 20px;"
+                                                  alt="...">
+                    </div>
+                    <div class="media-bottom" style="margin-left: 10px;">
+                        <span class="layui-icon layui-icon-praise great">[[${record.getBgreat()}]]</span>
+                        <span class="layui-icon layui-icon-read">[[${record.getView()}]]</span>
+                        <span th:text="${#dates.format(record.getCreatetime(),'yyyy-MM-dd HH:mm')}">111</span>
+                    </div>
+
+                </a>
+                <div th:text="${record.getTitle()}"></div>
+            </div>
+            111111
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

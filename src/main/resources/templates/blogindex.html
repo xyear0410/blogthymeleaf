@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--xmlns:th="http://www.w3.org/1999/xhtml"-->
+<!--http://www.thymeleaf.org-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+	<head>
+		<meta charset="utf-8">
+		<meta name="referrer" content="no-referrer">
+		<title>首页</title>
+		<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/layui/css/layui.css"/>
+		<script src="/layui/layui.js"></script>
+		<script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+		<script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+
+		<style>
+			body{
+				background: url("/layui/photo/dim.jpg") no-repeat ;
+				background-size:100% 100%;
+				background-attachment: fixed;
+
+			}
+			.media{
+				border:0px solid #b3adad;
+				width: 100%;
+				height: 100%;
+				border-radius: 20px;
+				position: relative;
+				background-color:rgba(255,255,255,0.1);
+				height: 231px;
+			}
+			.media-heading{
+				font-size: 31px;
+				display: inline;
+				margin-left: 27px;
+			}
+			.topindex{
+				height: 845px;
+				width: 80%;
+				background-color: rgba(1,1,1,0.6);
+				background: url("/image/water4.jpg") no-repeat;
+				background-size:100% 100%;
+			}
+			@font-face {
+				font-family: 'Glyphicons Halflings';
+				src: url('bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot');
+				src: url('bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+				url('bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff') format('woff'),
+				url('bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+				url('bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+			}
+			.layui-anim{animation-duration: 1s; -webkit-animation-duration: 1s;}
+
+		</style>
+	</head>
+	<body>
+	
+	<!-- 导航栏 -->
+		<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+	<div class="container-fluid topindex layui-anim layui-anim-up "  >
+
+		<div  class="col-sm-5" style="padding-top: 30px; font-size: 86px;left: 10px;margin-top: 192px;">
+			<div class="layui-anim layui-anim-up ">欢迎</div>
+			<div class="layui-anim layui-anim-up ">来到</div>
+			<div class="layui-anim layui-anim-up ">水墨的世界</div>
+		</div>
+		<div class="col-sm-5">
+
+		</div>
+		<div class="col-sm-2" style="height: 50px;">
+			<input type="hidden" th:value="${addblogmsg}"/>
+			<div th:if="${addblogmsg eq 1}" class="alert alert-success alert-dismissible addblog" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>添加成功</strong>
+			</div>
+			<div th:if="${addblogmsg eq 0}" class="alert alert-danger alert-dismissible addblogfail" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>添加失败</strong>
+			</div>
+			<script>
+				$('.addblog').html('添加成功').addClass('alert-success').show().delay(1200).fadeOut();
+				$('.addblogfail').html('添加失败').addClass('alert-warning').show().delay(1200).fadeOut();
+			</script>
+		</div>
+	</div>
+
+		<!-- 主体 -->
+		<div class="container layui-anim layui-anim-up ">
+			<div class="row">
+				<!-- 为空 -->
+				<div class=" col-sm-11" >
+
+					<div class="row" style="margin-top: 30px;">
+					  <!-- 具体内容 -->
+
+								<div class="media"   th:each="blink:${blinks}" style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+									<a th:href="@{/toblogmessage/}+${blink.getId()}" style="text-decoration:none;">
+									<div class="media-body" style="height: 100%">
+										<div class="media-heading" th:text="${blink.getTitle()}" > </div>
+										<br>
+										<div  style="font-size: 20px; margin: 30px;margin-left: 50px;height: 50px;
+											font-weight: lighter;padding-left: 25px; color: #0a8652;font-family:Glyphicons Halflings "
+											  th:utext="${blink.getContent()}"></div>
+										<br>
+
+									</div>
+
+									<div class="media-right"><img class="media-object" th:src="@{${blink.getPicture()}}"
+															   style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-right: 8px;border-radius: 20px;"
+															   alt="...">
+									</div>
+
+										<div class="media-bottom" style="margin-left: 10px;">
+											<span class="layui-icon layui-icon-praise great">[[${blink.getBgreat()}]]</span>
+											<span class="layui-icon layui-icon-read">[[${blink.getView()}]]</span>
+											<span th:text="${#dates.format(blink.getCreatetime(),'yyyy-MM-dd HH:mm')}">111</span>
+										</div>
+
+									</a>
+
+
+									<hr>
+								</div>
+
+<!--								分页-->
+								<nav aria-label="Page navigation" >
+								<ul class="pagination">
+
+									<li>
+										<a th:href="'/toblogdindex?pageNum=1'">首页</a>
+									</li>
+									<li>
+										<!-- 上一页 -->
+									<li th:if="${currentpage eq 1}" class="disabled">
+										<a class="Previous"   aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+
+									<li th:if="${currentpage ne 1}">
+										<a class="Previous" th:href="'/toblogdindex?pageNum='+${currentpage -1}"  aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+
+									</li>
+									<li th:each="pageNum:${#numbers.sequence(1,pagecount)}">
+										<a th:href="'/toblogdindex?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum eq currentpage}"  th:style="'font-weight:bold;background: #6faed9;'"></a>
+										<a th:href="'/toblogdindex?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum ne currentpage}"  ></a>
+
+									</li>
+									<!--下一页-->
+									<li  th:if="${currentpage ne pagecount}">
+										<a th:href="'/toblogdindex?pageNum='+${currentpage +1}"  aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+
+									<li  th:if="${currentpage eq pagecount}" class="disabled">
+										<a  aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+
+
+					</div>
+
+					
+					</div>
+		
+			
+				  </div>
+				
+
+			
+		</div>
+
+	</body>
+</html>

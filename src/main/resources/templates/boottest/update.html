@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>编辑</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+    <script src="../ckeditor5/build/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable { min-height: 300px; }
+    </style>
+
+</head>
+<body>
+<div th:replace="~{commons/adcommon::topbar}"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="~{commons/adcommon::sidebar}"></div>
+
+            <div class="col-sm-8" >
+                <div class="page-header">
+                    <h1>博客修改 </h1>
+                    <a class="btn btn-sm btn-default" th:href="@{/getbot}">返回</a>
+                </div>
+                <form method="post" th:action="@{/updateblog}" enctype="multipart/form-data">
+                        <div class="row">
+
+                            <div class="form-group col-sm-6">
+                                <!--id隐藏-->
+                                <input type="hidden" th:value="${blog.getUid()}" name="uid">
+                                <input type="hidden" th:value="${blog.getId()}" name="id">
+                                <!--获取标题-->
+                                <label for="title"> 标题:</label>
+                                <input type="text" th:value="${blog.getTitle()}" id="title" name="title" class="form-control" placeholder="标题" aria-describedby="basic-addon1">
+                            </div>
+                                <div class="form-group col-sm-6">
+                                    作者:<input type="text" th:value="${blog.getName()}" class="form-control" readonly>
+                                </div>
+
+                        </div>
+                        <div class="row">
+
+                                <div class="form-group col-sm-offset-1 col-sm-5">
+                                    图片：
+                                    <img th:src="@{${blog.getPicture()}}" style="width: 290px;height: 200px;">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                   <small> 封面想更新得话就点这里</small>
+                                    <input type="hidden" name="picture" id="pic1" style="width: 40%;height: 10%" th:value="${blog.getPicture()}">
+                                    <input type="file" name="file" >
+                                </div>
+                        </div>
+
+                                <div class="form-group ">
+                                        <label >分类</label>
+                                        <select  name="classifyid" class="form-control">
+                                            <option th:each="classify : ${classifies}"
+                                                    th:selected="${blog.getClassifyid()==classify.getId()}"
+                                                    th:text="${classify.getClassifyname()}"
+                                                    th:value="${classify.getId()}"
+                                                    name="classifyid"></option>
+                                        </select>
+
+                                </div>
+
+                                <div class="form-group">
+                                    内容:
+                                    <textarea  id="content"
+                                              th:utext="${blog.getContent()}"
+                                              name="content" class="form-control" placeholder="内容" >
+                                    </textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    创建时间:
+                                    <span class="form-control-static">
+                                        [[${#dates.format(blog.getCreatetime(),'yyyy-MM-dd HH:mm')}]]
+                                    </span>
+                                    <input type="hidden" name="createtime" th:value="${blog.getCreatetime()}">
+                                    <input type="hidden" name="updatetime" th:value="${blog.getUpdatetime()}">
+                                </div>
+                                <div style="text-align: right">
+                                  <button type="submit" class="btn btn-primary">更新</button>
+                                </div>
+                </form>
+            </div>
+    </div>
+</div>
+
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#content' ), {
+
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'bold',
+                    'italic',
+                    'link',
+                    'bulletedList',
+                    'numberedList',
+                    '|',
+                    'outdent',
+                    'indent',
+                    '|',
+                    'blockQuote',
+                    'undo',
+                    'redo'
+                ]
+            },
+            language: 'zh-cn',
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            },
+            licenseKey: '',
+
+
+        } )
+        .then( editor => {
+            window.editor = editor;
+
+        } )
+        .catch( error => {
+            console.error( 'Oops, something went wrong!' );
+            console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
+            console.warn( 'Build id: ibjq5v6l3gi2-rzn5b6r6hoyd' );
+            console.error( error );
+        } );
+</script>
+</body>
+</html>

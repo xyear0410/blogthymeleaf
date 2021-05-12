@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--http://www.thymeleaf.org-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>动态</title>
+</head>
+<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="/layui/css/layui.css"/>
+<script src="/layui/layui.js"></script>
+<script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+<script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<style>
+    body{
+        background: url("/layui/photo/dim.jpg") no-repeat ;
+        background-size:100% 100%;
+        background-attachment: fixed;
+    }
+    .mymessage{
+        text-align: center;
+    }
+
+</style>
+<body>
+<!-- 导航栏 -->
+<div th:replace="~{commons/blogcommon::blogtopbar}"></div>
+<hr></hr>
+<div class="row">
+        <div class="page-header col-sm-offset-4 col-sm-4 col-sm-offset-4">
+            <h1>我的动态 <small>你关注的博主的博客都会在这里哦</small></h1>
+        </div>
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+             <div class="media"  th:each="list : ${lists}" style="background: rgba(218,218,218,0.5);border-radius: 15px;">
+                        <div class="row" style="margin-bottom: 13px;margin-top: 6px;">
+                                <div class="col-sm-8">
+                                        <img th:src="@{${list.getUserpic()}}" alt="..." class="img-circle "
+                                                            style="width: 4%;height: 14%;margin-left: 47px;" >
+                                        <span th:text="${list.getName()}" style="margin-left: 20px;margin-bottom: 20px;font-size: 20px;">sd</span>
+                                </div>
+                            <div class="col-sm-offset-2 col-sm-2">
+                                    <a class="btn btn-sm btn-primary " style="right: 0;" th:href="@{/toblogmessage/}+${list.id}">详情</a>`
+
+                            </div>
+                        </div>
+                    <hr>
+
+                            <div style="margin-left: 10px;">
+                                <div class="media-body" style="height: 100%">
+                                    <h2 class="media-heading" th:text="${list.getTitle()}">Media heading</h2>
+
+                                    <div  style="font-size: 20px;margin-bottom: 30px;
+                                      margin-right: 10px;height: 50px;
+				                	font-weight: lighter;padding-left: 25px; color: #0a8652;"
+                                         th:utext="${list.getContent()}"></div>
+
+                                </div>
+
+                            </div>
+                 <br>
+                                <div class="media-right">
+                                    <img class="mymessage" th:src="@{${list.getPicture()}}" alt="..."
+                                         style="width: 328px; height: 195px; margin-top: 6px;
+															   margin-left: 230px;border-radius: 20px;">
+                                </div>
+
+
+<!--                                底部-->
+                                <div class="media-bottom" style="margin-left: 10px;">
+
+<!--                                        点赞-->
+                                        <div class="glyphicon glyphicon-hand-right"></div>
+                                        <span th:text="${list.getBgreat()}">11</span>
+<!--                                        浏览数目-->
+                                        <div class="glyphicon glyphicon-eye-open"><span th:text="${list.getView()}">231</span> </div>
+                                        <!--            创建日期-->
+                                        <div class="glyphicon glyphicon-dashboard" >
+                                            <span th:text="${#dates.format(list.getCreatetime(),'yyyy-MM-dd HH:mm:ss')}"></span></div>
+
+                                </div>
+                    <br>
+
+
+             </div>
+            </div>
+
+                <!--分页-->
+            <nav aria-label="Page navigation" >
+                <ul class="pagination">
+
+                    <li>
+                        <a th:href="'/toaction?pageNum=1'">首页</a>
+                    </li>
+                    <li>
+                        <!-- 上一页 -->
+                    <li th:if="${currentpage eq 1}" class="disabled">
+                        <a class="Previous"   aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <li th:if="${currentpage ne 1}">
+                        <a class="Previous" th:href="'/toaction?pageNum='+${currentpage -1}"  aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    </li>
+                    <li th:each="pageNum:${#numbers.sequence(1,pagecount)}">
+                        <a th:href="'/toaction?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum eq currentpage}"  th:style="'font-weight:bold;background: #6faed9;'"></a>
+                        <a th:href="'/toaction?pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum ne currentpage}"  ></a>
+
+                    </li>
+                    <!--下一页-->
+                    <li  th:if="${currentpage ne pagecount}">
+                        <a th:href="'/toaction?pageNum='+${currentpage +1}"  aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                    <li  th:if="${currentpage eq pagecount}" class="disabled">
+                        <a  aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+
+
+        </div>
+
+        <div class="col-sm-2">2 </div>
+
+    </div>
+
+</div>
+</body>
+</html>

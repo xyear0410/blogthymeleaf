@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+sda
+<a th:text="${kos}"></a>
+<table>
+<tr th:each="blink:${bs}">
+    <td th:text="${blink.getId()}"></td>
+    <td th:text="${blink.getTitle()}"></td>
+    <td th:text="${blink.getUid()}"></td>
+    <td th:text="${blink.getName()}"></td>
+    <td> <img th:src="@{${blink.getPicture()}}"></td>
+
+    <td th:text="${blink.getContent()}"></td>
+    <td th:text="${#dates.format(blink.getCreatetime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td th:text="${#dates.format(blink.getUpdatetime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td>
+        <!---->
+        <a class="btn btn-sm btn-primary" th:href="@{/toupdateblog(id=${blink.getId()})}">编辑</a>
+        <!--                        <a class="btn btn-sm btn-primary" th:href="@{/updateblog/}+${blink.getId()}">编辑</a>-->
+        <a class="btn btn-sm btn-danger" th:href="@{/deletedblog/}+${blink.getId()}">删除</a>
+
+    </td>
+</tr>
+
+</table>
+
+
+
+</body>
+</html>

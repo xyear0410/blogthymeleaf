@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/bootstrap-3.3.7-dist/js/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+
+</head>
+<body>
+hhhh
+
+<div id="comment-container" >
+<!--    评论列表-->
+    <div th:fragment="commentList">
+        <div class="container" th:each="comment : ${comments}">
+    <ul class="media-list" >
+        <li class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object"  src="image/kkk.jpg" alt="..." style="width: 66px;height: 61px;">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading" th:text="${comment.getUname()}">Media heading</h4>
+                <div class="text" th:text="${comment.getContent()}">
+                    愿你走出半生，归来仍是少年！
+                </div>
+                <p></p>
+
+            </div>
+        </li>
+
+    </ul>
+        </div>
+</div>
+
+<!--    评论内容-->
+    <div>
+
+
+    </div>
+</div>
+<script th:inline="javascript">
+
+
+    //加载！！！！！是在页面加载后,调用控制层的方法
+    $(function () {
+        $("#comment-container").load("/comment");
+    });
+</script>
+</body>
+</html>
